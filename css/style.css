@@ -56,14 +56,14 @@ body {
 
 #join_container {
   width: 100%;
-  height: 200px;
+  height: calc(100vh - 100px);
 
   display: flex;
   justify-content: center;
   align-items: center;
 
   float: left;
-  margin-top: 80px;
+  margin-top: 0;
 }
 
 #join_inner_container {
