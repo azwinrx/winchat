@@ -67,8 +67,10 @@ body {
 }
 
 #join_inner_container {
-  width: 50%;
-  height: 50%;
+  width: 90%;
+  max-width: 500px;
+  height: auto;
+  padding: 20px;
 }
 
 #join_input_container {
@@ -108,8 +110,9 @@ body {
 }
 
 #join_button {
-  width: 30%;
-  height: 40px;
+  width: 40%;
+  min-width: 120px;
+  height: 45px;
   border-radius: 50px;
 
   font-family: Varela Round;
@@ -117,11 +120,14 @@ body {
   font-weight: bold;
   text-align: center;
   color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 #chat_container {
   width: 100%;
-  height: 850px;
+  height: calc(100vh - 150px);
+  min-height: 500px;
 
   display: flex;
   justify-content: center;
@@ -137,49 +143,52 @@ body {
   margin-left: 30px;
   margin-right: 30px;
   margin-bottom: 0px;
-  width: 100%;
+  width: calc(100% - 60px);
+  max-width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #chat_content_container {
   width: 100%;
-  height: 50%;
-
-  float: left;
+  flex: 1;
   overflow-y: auto;
   font-family: Varela Round;
-
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 #chat_input_container {
   width: 100%;
   height: 50px;
-
-  float: left;
+  display: flex;
+  align-items: center;
   border-bottom: 2px dashed #1d3354;
   background-color: Transparent;
   padding: 0 15px;
+  gap: 10px;
 }
 
 #chat_input {
-  width: 95%;
+  flex: 1;
   height: 100%;
-  float: left;
   background-color: Transparent;
   color: #1d3354;
   font-size: 15px;
 }
 
 #chat_input_send {
-  width: 5%;
-  height: 100%;
-  float: left;
+  width: 40px;
+  height: 40px;
   font-size: 18px;
   background-color: Transparent;
-  text-align: right;
+  text-align: center;
   color: #024f8e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 #chat_input_send.enabled {
@@ -191,59 +200,80 @@ body {
 #chat_logout_container {
   width: 100%;
   height: 70px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   margin-top: 20px;
+  flex-shrink: 0;
 }
 
 #chat_logout {
   text-decoration: none;
   width: 100%;
+  max-width: 300px;
   height: 50px;
   border-radius: 50px;
   background-color: #024f8e;
   color: rgb(255, 255, 255);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Varela Round;
+  font-size: 15px;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 .message_container {
   width: 100%;
   display: inline-block;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.message_container.grouped_message {
+  margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .message_inner_container {
-  width: 100%;
+  width: auto;
+  max-width: 80%;
   display: inline-block;
-
-  color: #024f8e;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #024f8e;
+  box-shadow: 0 2px 8px rgba(2, 79, 142, 0.25);
+  color: #ffffff;
+  word-wrap: break-word;
 }
 
 .message_user_container {
   width: 100%;
   display: inline-block;
+  margin-bottom: 6px;
 }
 
 .message_user {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
+  color: rgb(255, 204, 2);
 }
 
 .message_content_container {
   width: 100%;
   display: inline-block;
-
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
 .message_content {
-  font-weight: normal;
+  font-weight: 500;
   font-size: 14px;
-  margin-top: 5px;
+  line-height: 1.5;
+  margin-top: 4px;
+  color: #ffffff;
 }
 
 .enabled {
@@ -306,6 +336,18 @@ body {
   }
 }
 
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes blur {
   0% {
     filter: blur(5px);
@@ -337,84 +379,33 @@ body {
 }
 
 /* mobile */
-@media screen and (max-width: 600px) {
-  #chat_container {
-    height: 110vh;
-    max-height: calc(110vh - 150px);
-    /* Sesuaikan dengan tinggi input container */
-    overflow-y: auto;
-    margin-bottom: 60px;
-    /* Sesuaikan dengan tinggi input container */
+@media screen and (max-width: 768px) {
+  #title {
+    font-size: 40px;
+  }
+
+  #chat_inner_container {
+    margin: 15px;
+    width: calc(100% - 30px);
   }
 
   #chat_content_container {
-    width: 100%;
-    height: 70%;
-    float: left;
-    overflow-y: auto;
-    font-family: Varela Round;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-bottom: 50px;
+    padding: 8px;
   }
 
-  #join_button {
-    width: 60%;
-  }
-
-  #chat_input_container {
-    width: 95%;
-    height: 35px;
-    margin-left: -20px;
-    margin-bottom: 10px;
-    position: fixed;
-    /* Mengubah posisi menjadi fixed */
-    bottom: 0;
-    transition: bottom 0.3s ease;
-  }
-
-  #chat_logout_container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 25%;
-    /* Ensure it's above other content */
-    background-color: transparent;
-    padding: 10px 15px;
-    /* Adjust padding as needed */
-    /* Add a border to separate from content */
-  }
-
-  /* Adjust chat input and send button width */
-  #chat_input {
-    width: calc(100% - 50px);
-    /* Adjust width based on send button width */
-  }
-
-  #chat_input_send {
-    width: 50px;
-    /* Set fixed width for send button */
-  }
-
-  /* Adjust logout button styles */
   #chat_logout {
-    border: 1px solid;
-    text-decoration: none;
-    width: 100%;
-    height: 50px;
-    border-radius: 50px;
-    background-color: rgb(255, 204, 2);
-    color: #024f8e;
-    border: 2px solid #1d3354;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Adds shadow */
+    max-width: 100%;
+  }
 
-    width: 100%;
-    height: 40px;
-    /* Adjust height as needed */
-    border-radius: 20px;
-    /* Adjust border radius for button */
-    font-size: 14px;
-    /* Adjust font size */
+  .message_inner_container {
+    max-width: 85%;
+  }
+
+  .message_user {
+    font-size: 12px;
+  }
+
+  .message_content {
+    font-size: 13px;
   }
 }

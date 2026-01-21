@@ -141,27 +141,39 @@ window.onload = function () {
       chat_input.setAttribute("maxlength", 1000);
       // get nama user yang sedang chat
       chat_input.placeholder = `${parent.get_name()}, Katakan sesuatu...`;
+
+      // Function untuk kirim pesan
+      var sendMessage = function () {
+        if (chat_input.value.length <= 0) {
+          return;
+        }
+        chat_input_send.setAttribute("disabled", true);
+        chat_input_send.classList.remove("enabled");
+        // aktifin loading circle
+        parent.create_load("chat_content_container");
+        // buat ngirim pesan
+        parent.send_message(chat_input.value);
+        // hapus pesan yang diinput
+        chat_input.value = "";
+        // aktifin send button
+        chat_input.focus();
+      };
+
       chat_input.onkeyup = function () {
         if (chat_input.value.length > 0) {
           chat_input_send.removeAttribute("disabled");
           chat_input_send.classList.add("enabled");
-          chat_input_send.onclick = function () {
-            chat_input_send.setAttribute("disabled", true);
-            chat_input_send.classList.remove("enabled");
-            if (chat_input.value.length <= 0) {
-              return;
-            }
-            // aktifin loading circle
-            parent.create_load("chat_content_container");
-            // buat ngirim pesan
-            parent.send_message(chat_input.value);
-            // hapus pesan yang diinput
-            chat_input.value = "";
-            // aktifin send button
-            chat_input.focus();
-          };
+          chat_input_send.onclick = sendMessage;
         } else {
           chat_input_send.classList.remove("enabled");
+        }
+      };
+
+      // Kirim chat saat tekan Enter
+      chat_input.onkeypress = function (event) {
+        if (event.key === "Enter" && chat_input.value.length > 0) {
+          event.preventDefault();
+          sendMessage();
         }
       };
 
@@ -195,7 +207,7 @@ window.onload = function () {
       chat_inner_container.append(
         chat_content_container,
         chat_input_container,
-        chat_logout_container
+        chat_logout_container,
       );
       chat_container.append(chat_inner_container);
       document.body.append(chat_container);
@@ -250,13 +262,13 @@ window.onload = function () {
 
         // Membuat pola regex yang mempertimbangkan substitusi untuk setiap kata kasar
         const badWordsPatterns = badWords.map((word) =>
-          createRegexPattern(word)
+          createRegexPattern(word),
         );
 
         // Algoritma Regular Expression yang ditingkatkan
         const badWordsRegex = new RegExp(
           `(${badWordsPatterns.join("|")})`,
-          "gi"
+          "gi",
         );
         // g = Menyuruh RegEx untuk mencari semua kecocokan dalam teks, bukan hanya kecocokan pertama.
         // i = Menyuruh RegEx untuk memeriksa semua huruf kecil dan besar.
@@ -315,7 +327,7 @@ window.onload = function () {
     // refresh chat buat dapetin update chat
     refresh_chat() {
       var chat_content_container = document.getElementById(
-        "chat_content_container"
+        "chat_content_container",
       );
 
       // dapetin dari firebase
@@ -352,6 +364,9 @@ window.onload = function () {
         });
 
         // nampilin urutan chat
+        var previousName = null;
+        var previousTime = null;
+
         ordered.forEach(function (data) {
           var name = data.name;
           var message = data.message;
@@ -363,38 +378,53 @@ window.onload = function () {
           var message_inner_container = document.createElement("div");
           message_inner_container.setAttribute(
             "class",
-            "message_inner_container"
+            "message_inner_container",
           );
 
-          var message_user_container = document.createElement("div");
-          message_user_container.setAttribute(
-            "class",
-            "message_user_container"
-          );
+          // Cek apakah perlu tampilkan info pengirim
+          var shouldShowSender = true;
+          if (previousName === name && previousTime === time) {
+            shouldShowSender = false;
+          }
 
-          var message_user = document.createElement("p");
-          message_user.setAttribute("class", "message_user");
-          message_user.textContent = `${name} at ${time}`; // tampilin nama dan waktu
+          // Hanya buat user container kalau perlu ditampilkan
+          if (shouldShowSender) {
+            var message_user_container = document.createElement("div");
+            message_user_container.setAttribute(
+              "class",
+              "message_user_container",
+            );
+
+            var message_user = document.createElement("p");
+            message_user.setAttribute("class", "message_user");
+            message_user.textContent = `${name} at ${time}`; // tampilin nama dan waktu
+
+            message_user_container.append(message_user);
+            message_inner_container.append(message_user_container);
+          } else {
+            // Kasih margin lebih kecil untuk pesan berurutan dari pengirim sama
+            message_container.classList.add("grouped_message");
+          }
 
           var message_content_container = document.createElement("div");
           message_content_container.setAttribute(
             "class",
-            "message_content_container"
+            "message_content_container",
           );
 
           var message_content = document.createElement("p");
           message_content.setAttribute("class", "message_content");
           message_content.textContent = `${message}`;
 
-          message_user_container.append(message_user);
           message_content_container.append(message_content);
-          message_inner_container.append(
-            message_user_container,
-            message_content_container
-          );
+          message_inner_container.append(message_content_container);
           message_container.append(message_inner_container);
 
           chat_content_container.append(message_container);
+
+          // Update previous untuk iterasi berikutnya
+          previousName = name;
+          previousTime = time;
         });
         // chat baru msk ke bawah
         chat_content_container.scrollTop = chat_content_container.scrollHeight;
