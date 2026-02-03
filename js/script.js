@@ -135,10 +135,11 @@ window.onload = function () {
       chat_input_send.setAttribute("disabled", true);
       chat_input_send.innerHTML = `<i class="far fa-paper-plane"></i>`;
 
-      var chat_input = document.createElement("input");
+      var chat_input = document.createElement("textarea");
       chat_input.setAttribute("id", "chat_input");
+      chat_input.setAttribute("rows", "1");
       // atur batas max chat yang diketik
-      chat_input.setAttribute("maxlength", 1000);
+      chat_input.setAttribute("maxlength", 5000);
       // get nama user yang sedang chat
       chat_input.placeholder = `${parent.get_name()}, Katakan sesuatu...`;
 
@@ -155,6 +156,8 @@ window.onload = function () {
         parent.send_message(chat_input.value);
         // hapus pesan yang diinput
         chat_input.value = "";
+        // reset tinggi textarea ke ukuran awal
+        chat_input.style.height = "auto";
         // aktifin send button
         chat_input.focus();
       };
@@ -169,12 +172,23 @@ window.onload = function () {
         }
       };
 
-      // Kirim chat saat tekan Enter
+      // Kirim chat saat tekan Enter (tanpa Shift)
+      // Shift+Enter untuk baris baru
       chat_input.onkeypress = function (event) {
-        if (event.key === "Enter" && chat_input.value.length > 0) {
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey &&
+          chat_input.value.length > 0
+        ) {
           event.preventDefault();
           sendMessage();
         }
+      };
+
+      // Auto-resize textarea saat mengetik
+      chat_input.oninput = function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 250) + "px";
       };
 
       // Mendeteksi perubahan ukuran layar (misalnya, saat keyboard muncul atau menghilang)
